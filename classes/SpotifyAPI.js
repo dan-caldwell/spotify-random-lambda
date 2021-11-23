@@ -1,4 +1,4 @@
-const { characters, markets } = require('../data');
+const { characters, markets, westernMarkets } = require('../data');
 const SpotifyWebApi = require('spotify-web-api-node');
 const Chance = require('chance');
 const Utils = require('./Utils');
@@ -11,17 +11,26 @@ class SpotifyAPI {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    static randomCharacter(numChars = 1) {
-        const alphabet = chance.weighted(characters, [...Array(characters.length).keys()].reverse());
+    static randomCharacter(numChars = 1, marketType) {
+        let alphabet = [];
+        if (marketType === "western") {
+            alphabet = characters.find(item => item.alphabet === 'latin') || characters[0];
+        } else {
+            alphabet = chance.weighted(characters, [...Array(characters.length).keys()].reverse());
+        }
         return [...Array(numChars).keys()]
-            .map(num => 
-                    Utils.getUnicodeCharacter(Utils.randomOffset(alphabet.start, alphabet.end))
-                ).join('');
+            .map(num =>
+                Utils.getUnicodeCharacter(Utils.randomOffset(alphabet.start, alphabet.end))
+            ).join('');
     }
 
     // Get a random market
-    static randomMarket() {
-        return markets[Math.floor(Math.random() * markets.length)];
+    static randomMarket(marketType) {
+        let marketList = markets;
+        if (marketType === 'western') {
+            marketList = westernMarkets;
+        }
+        return marketList[Math.floor(Math.random() * marketList.length)];
     }
 
     static async setupSpotifyAPI() {
@@ -37,11 +46,12 @@ class SpotifyAPI {
     }
 
     static async searchForRandomTrack({
-        spotifyAPI
+        spotifyAPI,
+        marketType = null
     }) {
         const offset = Utils.randomOffset();
-        const market = this.randomMarket();
-        const query = this.randomCharacter(2);
+        const market = this.randomMarket(marketType);
+        const query = this.randomCharacter(2, marketType);
         try {
             const response = await spotifyAPI.searchTracks(query, {
                 offset,
@@ -76,28 +86,31 @@ class SpotifyAPI {
     static async addTracksToPlaylist({
         spotifyAPI,
         tracks,
+        playlistId
     }) {
-        await spotifyAPI.addTracksToPlaylist(process.env.SPOTIFY_PLAYLIST_ID, tracks);
+        await spotifyAPI.addTracksToPlaylist(playlistId, tracks);
     }
 
     static async removeAllTracksFromPlaylist({
         spotifyAPI,
         snapshotId,
-        playlistLength
+        playlistLength,
+        playlistId
     }) {
         if (playlistLength === 0) return;
         await spotifyAPI.removeTracksFromPlaylistByPosition(
-            process.env.SPOTIFY_PLAYLIST_ID,
+            playlistId,
             [...Array(playlistLength).keys()],
             snapshotId
         );
     }
 
     static async getPlaylist({
-        spotifyAPI
+        spotifyAPI,
+        playlistId
     }) {
         try {
-            const result = await spotifyAPI.getPlaylist(process.env.SPOTIFY_PLAYLIST_ID);
+            const result = await spotifyAPI.getPlaylist(playlistId);
             if (result?.body) {
                 return {
                     snapshotId: result.body.snapshot_id,

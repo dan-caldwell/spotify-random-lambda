@@ -1,54 +1,12 @@
-const SpotifyAPI = require('./classes/SpotifyAPI');
+const Response = require('./classes/Response');
 
-module.exports.hello = async event => {
+module.exports.western = async event => await Response.create({
+  marketType: 'western',
+  playlistId: process.env.SPOTIFY_PLAYLIST_ID_WESTERN,
+  length: 30
+});
 
-  try {
-    const spotifyAPI = await SpotifyAPI.setupSpotifyAPI();
-
-    const randomTracks = [];
-    while (randomTracks.length < 20) {
-      const randomTrack = await SpotifyAPI.searchForRandomTrack({
-        spotifyAPI
-      });
-      await SpotifyAPI.timeout(500);
-      if (randomTrack) {
-        randomTracks.push(randomTrack);
-      }
-    }
-
-    if (!randomTracks.length) {
-      return {
-        message: 'No tracks added'
-      }
-    }
-
-    // Get playlist info
-    const { playlistLength, snapshotId } = await SpotifyAPI.getPlaylist({
-      spotifyAPI
-    });
-
-    // Remove all tracks
-    console.log('Removing all tracks from playlist');
-    await SpotifyAPI.removeAllTracksFromPlaylist({
-      spotifyAPI,
-      playlistLength,
-      snapshotId
-    })
-
-    // Add new tracks
-    console.log('Replacing tracks in playlist');
-    await SpotifyAPI.addTracksToPlaylist({
-      spotifyAPI,
-      tracks: randomTracks,
-    });
-
-    return {
-      message: 'Added tracks to playlist',
-      tracks: randomTracks
-    }
-
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-};
+module.exports.global = async event => await Response.create({
+  playlistId: process.env.SPOTIFY_PLAYLIST_ID_GLOBAL,
+  length: 30
+});

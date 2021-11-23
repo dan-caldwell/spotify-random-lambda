@@ -71,6 +71,11 @@ module.exports = {
             end: 12245
         },
     ],
+    westernMarkets: [
+        "US",
+        "CA",
+        "GB"
+    ],
     markets: [
         "AD",
         "AE",

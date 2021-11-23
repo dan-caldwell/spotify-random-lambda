@@ -45,8 +45,12 @@ provider:
 #    - include-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  global:
+    handler: handler.global
+    events:
+      - schedule: rate(1 day)
+  western:
+    handler: handler.western
     events:
       - schedule: rate(1 day)
 #    The following are a few example events you can configure
