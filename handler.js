@@ -1,4 +1,5 @@
 const Response = require('./classes/Response');
+require('dotenv').config();
 
 module.exports.western = async event => await Response.create({
   marketType: 'western',

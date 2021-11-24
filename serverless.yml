@@ -3,12 +3,12 @@ service: spotify-random-lambda
 #app: your-app-name
 #org: your-org-name
 frameworkVersion: '2'
-useDotenv: true
 
 provider:
   name: aws
   runtime: nodejs14.x
   lambdaHashingVersion: 20201221
+  timeout: 60
 
 # you can overwrite defaults here
 # stage: dev
