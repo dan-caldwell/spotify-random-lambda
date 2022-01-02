@@ -11,3 +11,8 @@ module.exports.global = async event => await Response.create({
   playlistId: process.env.SPOTIFY_PLAYLIST_ID_GLOBAL,
   length: 30
 });
+
+module.exports.background = async event => await Response.createBackground({
+  playlistId: process.env.SPOTIFY_PLAYLIST_ID_BACKGROUND,
+  length: 30
+});

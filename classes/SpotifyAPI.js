@@ -83,6 +83,36 @@ class SpotifyAPI {
 
     }
 
+    static async getRecommendations({
+        spotifyAPI,
+        seed_genres,
+        seed_tracks,
+        max_energy,
+        max_popularity,
+        min_instrumentalness,
+        target_instrumentalness,
+        limit
+    }) {
+        try {
+            const response = await spotifyAPI.getRecommendations({
+                seed_tracks,
+                max_energy,
+                max_popularity,
+                min_instrumentalness,
+                target_instrumentalness,
+                seed_genres,
+                limit
+            });
+            const tracks = response.body.tracks.map(track => track.uri);
+            return tracks;
+        } catch (err) {
+            console.log(err);
+            console.error('Could not get tracks');
+            return [];
+        }
+
+    }
+
     static async addTracksToPlaylist({
         spotifyAPI,
         tracks,
