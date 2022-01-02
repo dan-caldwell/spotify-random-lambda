@@ -77,7 +77,8 @@ class Response {
 
     static async createBackground({
         playlistId,
-        length
+        length,
+        marketType
     }) {
         try {
             const spotifyAPI = await SpotifyAPI.setupSpotifyAPI();
@@ -85,7 +86,8 @@ class Response {
             while (totalTracks.length < length) {
                 await SpotifyAPI.timeout(500);
                 const randomTrack = await SpotifyAPI.searchForRandomTrack({
-                    spotifyAPI
+                    spotifyAPI,
+                    marketType
                 });
                 if (!randomTrack) continue;
                 const formattedTrackId = randomTrack.split(':').pop();
@@ -94,6 +96,7 @@ class Response {
                     seed_tracks: [formattedTrackId],
                     min_instrumentalness: 0.9,
                     target_instrumentalness: 1,
+                    max_popularity: 60
                 });
                 // Get a random track from the tracks returned
                 const randomTrackInTracks = tracks[Math.floor(Math.random() * tracks.length)];

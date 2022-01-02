@@ -103,7 +103,17 @@ class SpotifyAPI {
                 seed_genres,
                 limit
             });
-            const tracks = response.body.tracks.map(track => track.uri);
+            // Exclude most classical music titles
+            const excludeTitles = ["No.", "Op.", "Sonata", "Concerto"];
+            // Exclude most classical music artists
+            const excludeArtists = ["Choir", "Philharmonic", "Orchestra", "Symphony", "Ensemble", "Johann Sebastian Bach"];
+            const tracks = response.body.tracks.filter(track => {
+                const excludeViaTitle = excludeTitles.find(title => track.name.includes(title));
+                if (excludeViaTitle) return false;
+                const excludeViaArtist = track.artists.some(artist => excludeArtists.find(title => artist.name.includes(title)));
+                if (excludeViaArtist) return false;
+                return true;
+            }).map(track => track.uri);
             return tracks;
         } catch (err) {
             console.log(err);

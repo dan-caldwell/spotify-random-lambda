@@ -13,6 +13,7 @@ module.exports.global = async event => await Response.create({
 });
 
 module.exports.background = async event => await Response.createBackground({
+  marketType: 'western',
   playlistId: process.env.SPOTIFY_PLAYLIST_ID_BACKGROUND,
-  length: 40
+  length: 50
 });

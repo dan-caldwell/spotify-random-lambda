@@ -74,7 +74,25 @@ module.exports = {
     westernMarkets: [
         "US",
         "CA",
-        "GB"
+        "GB",
+        "JP",
+        "FI",
+        "IS",
+        "LU",
+        "PT",
+        "ES",
+        "NL",
+        "BE",
+        "FR",
+        "IT",
+        "CH",
+        "AT",
+        "DK",
+        "SE",
+        "NO",
+        "PL",
+        "DE",
+        "BR"
     ],
     markets: [
         "AD",
