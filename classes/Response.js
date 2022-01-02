@@ -94,12 +94,13 @@ class Response {
                     seed_tracks: [formattedTrackId],
                     min_instrumentalness: 0.9,
                     target_instrumentalness: 1,
-                    limit: 1
                 });
-                console.log(`${totalTracks.length}/${length}`);
+                // Get a random track from the tracks returned
+                const randomTrackInTracks = tracks[Math.floor(Math.random() * tracks.length)];
                 // Make sure the track isn't already in totalTracks
-                if (tracks.length && totalTracks.includes(tracks[0])) continue;
-                totalTracks.push(...tracks);
+                if (!randomTrackInTracks || totalTracks.includes(randomTrackInTracks)) continue;
+                totalTracks.push(randomTrackInTracks);
+                console.log(`${totalTracks.length}/${length}`);
             }
 
             return await this.replaceAllTracks({
