@@ -11,9 +11,9 @@ class SpotifyAPI {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    static randomCharacter(numChars = 1, marketType) {
+    static randomCharacter(numChars = 1, marketType, languageType) {
         let alphabet = [];
-        if (marketType === "western") {
+        if (marketType === "western" || languageType === "latin") {
             alphabet = characters.find(item => item.alphabet === 'latin') || characters[0];
         } else {
             alphabet = chance.weighted(characters, [...Array(characters.length).keys()].reverse());
@@ -25,9 +25,11 @@ class SpotifyAPI {
     }
 
     // Get a random market
-    static randomMarket(marketType) {
+    static randomMarket(marketType, languageType) {
         let marketList = markets;
-        if (marketType === 'western') {
+        // Get a random western market only when the marketType is 'western'
+        // And the language type is not 'latin'
+        if (marketType === 'western' && languageType !== 'latin') {
             marketList = westernMarkets;
         }
         return marketList[Math.floor(Math.random() * marketList.length)];
@@ -47,11 +49,12 @@ class SpotifyAPI {
 
     static async searchForRandomTrack({
         spotifyAPI,
-        marketType = null
+        marketType = null,
+        languageType = null
     }) {
         const offset = Utils.randomOffset();
-        const market = this.randomMarket(marketType);
-        const query = this.randomCharacter(2, marketType);
+        const market = this.randomMarket(marketType, languageType);
+        const query = this.randomCharacter(2, marketType, languageType);
         try {
             const response = await spotifyAPI.searchTracks(query, {
                 offset,
@@ -67,7 +70,11 @@ class SpotifyAPI {
                     query,
                     track
                 });
-                return track;
+                const artists = response.body.tracks.items[0].artists.map(artist => artist.id);
+                return {
+                    track,
+                    artists
+                };
             }
             console.log({
                 offset,
@@ -75,12 +82,30 @@ class SpotifyAPI {
                 query,
                 track: null
             });
-            return null;
+            return {};
         } catch (err) {
             console.log('Could not find any tracks');
-            return null;
+            return {};
         }
 
+    }
+
+    static async getArtistGenres({
+        spotifyAPI,
+        artists = []
+    }) {
+        try {
+            const { body: { artists: artistResult } } = await spotifyAPI.getArtists(artists);
+            return artistResult.reduce((total, item) => {
+                if (item.genres) {
+                    total.push(...item.genres);
+                }
+                return total;
+            }, []);
+        } catch (err) {
+            console.error('Could not get artist genres');
+            return [];
+        }
     }
 
     static async getRecommendations({
@@ -103,17 +128,10 @@ class SpotifyAPI {
                 seed_genres,
                 limit
             });
-            // Exclude most classical music titles
-            const excludeTitles = ["No.", "Op.", "Sonata", "Concerto"];
-            // Exclude most classical music artists
-            const excludeArtists = ["Choir", "Philharmonic", "Orchestra", "Symphony", "Ensemble", "Johann Sebastian Bach"];
-            const tracks = response.body.tracks.filter(track => {
-                const excludeViaTitle = excludeTitles.find(title => track.name.includes(title));
-                if (excludeViaTitle) return false;
-                const excludeViaArtist = track.artists.some(artist => excludeArtists.find(title => artist.name.includes(title)));
-                if (excludeViaArtist) return false;
-                return true;
-            }).map(track => track.uri);
+            const tracks = response.body.tracks.map(track => ({
+                uri: track.uri,
+                artists: track.artists.map(artist => artist.id)
+            }));
             return tracks;
         } catch (err) {
             console.log(err);

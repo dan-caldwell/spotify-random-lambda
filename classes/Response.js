@@ -12,7 +12,7 @@ class Response {
 
             const randomTracks = [];
             while (randomTracks.length < length) {
-                const randomTrack = await SpotifyAPI.searchForRandomTrack({
+                const { track: randomTrack } = await SpotifyAPI.searchForRandomTrack({
                     spotifyAPI,
                     marketType
                 });
@@ -78,16 +78,20 @@ class Response {
     static async createBackground({
         playlistId,
         length,
-        marketType
+        marketType,
+        excludedGenres = [],
+        languageType
     }) {
         try {
             const spotifyAPI = await SpotifyAPI.setupSpotifyAPI();
             const totalTracks = [];
+
             while (totalTracks.length < length) {
                 await SpotifyAPI.timeout(500);
-                const randomTrack = await SpotifyAPI.searchForRandomTrack({
+                const { track: randomTrack } = await SpotifyAPI.searchForRandomTrack({
                     spotifyAPI,
-                    marketType
+                    marketType,
+                    languageType
                 });
                 if (!randomTrack) continue;
                 const formattedTrackId = randomTrack.split(':').pop();
@@ -102,7 +106,17 @@ class Response {
                 const randomTrackInTracks = tracks[Math.floor(Math.random() * tracks.length)];
                 // Make sure the track isn't already in totalTracks
                 if (!randomTrackInTracks || totalTracks.includes(randomTrackInTracks)) continue;
-                totalTracks.push(randomTrackInTracks);
+                // Make sure the track artists genres aren't excluded
+                const genres = await SpotifyAPI.getArtistGenres({
+                    spotifyAPI,
+                    artists: randomTrackInTracks.artists
+                });
+                if (genres.find(genre => excludedGenres.includes(genre))) {
+                    console.log('Excluded genre found, ignoring', genres);
+                    continue;
+                }
+                console.log(genres);
+                totalTracks.push(randomTrackInTracks.uri);
                 console.log(`${totalTracks.length}/${length}`);
             }
 
