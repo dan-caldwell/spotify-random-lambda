@@ -105,7 +105,7 @@ class Response {
                 // Get a random track from the tracks returned
                 const randomTrackInTracks = tracks[Math.floor(Math.random() * tracks.length)];
                 // Make sure the track isn't already in totalTracks
-                if (!randomTrackInTracks || totalTracks.includes(randomTrackInTracks)) continue;
+                if (!randomTrackInTracks || totalTracks.includes(randomTrackInTracks?.uri)) continue;
                 // Make sure the track artists genres aren't excluded
                 const genres = await SpotifyAPI.getArtistGenres({
                     spotifyAPI,
