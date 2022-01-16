@@ -128,10 +128,12 @@ class SpotifyAPI {
                 seed_genres,
                 limit
             });
+            // Map and filter. Make sure available markets includes the US
             const tracks = response.body.tracks.map(track => ({
                 uri: track.uri,
-                artists: track.artists.map(artist => artist.id)
-            }));
+                artists: track.artists.map(artist => artist.id),
+                markets: track.available_markets
+            })).filter(track => track.markets.includes('US'));
             return tracks;
         } catch (err) {
             console.log(err);
