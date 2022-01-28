@@ -126,7 +126,7 @@ class Response {
                 tracks: totalTracks
             });
         } catch (err) {
-            console.error(err);
+            console.dir(err, { depth: null });
             return null;
         }
     }
