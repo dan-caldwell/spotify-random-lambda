@@ -80,9 +80,12 @@ class Response {
         length,
         marketType,
         excludedGenres = [],
+        excludedTracks = [],
         languageType
     }) {
         try {
+            const formattedExcludedTracks = excludedTracks.map(track => `spotify:track:${track}`);
+
             const spotifyAPI = await SpotifyAPI.setupSpotifyAPI();
             const totalTracks = [];
 
@@ -115,7 +118,11 @@ class Response {
                     console.log('Excluded genre found, ignoring', genres);
                     continue;
                 }
-                console.log(genres);
+                if (formattedExcludedTracks.includes(randomTrackInTracks.uri)) {
+                    console.log('Excluded track found, ignoring', randomTrackInTracks.uri);
+                    continue;
+                }
+                console.log(genres, randomTrackInTracks.uri);
                 totalTracks.push(randomTrackInTracks.uri);
                 console.log(`${totalTracks.length}/${length}`);
             }
