@@ -109,6 +109,11 @@ class Response {
                 const randomTrackInTracks = tracks[Math.floor(Math.random() * tracks.length)];
                 // Make sure the track isn't already in totalTracks
                 if (!randomTrackInTracks || totalTracks.includes(randomTrackInTracks?.uri)) continue;
+                // Make sure random track isn't banned
+                if (formattedExcludedTracks.includes(randomTrackInTracks.uri)) {
+                    console.log('Excluded track found, ignoring', randomTrackInTracks.uri);
+                    continue;
+                }
                 // Make sure the track artists genres aren't excluded
                 const genres = await SpotifyAPI.getArtistGenres({
                     spotifyAPI,
@@ -116,10 +121,6 @@ class Response {
                 });
                 if (genres.find(genre => excludedGenres.includes(genre))) {
                     console.log('Excluded genre found, ignoring', genres);
-                    continue;
-                }
-                if (formattedExcludedTracks.includes(randomTrackInTracks.uri)) {
-                    console.log('Excluded track found, ignoring', randomTrackInTracks.uri);
                     continue;
                 }
                 console.log(genres, randomTrackInTracks.uri);
