@@ -16,7 +16,9 @@ module.exports.background = async event => await Response.createBackground({
   marketType: 'western',
   playlistId: process.env.SPOTIFY_PLAYLIST_ID_BACKGROUND,
   excludedTracks: [
-    '23K2pVDTXadG5Rc8H8l0e9'
+    '23K2pVDTXadG5Rc8H8l0e9',
+    '1z8Ryd5EjADc14IFJJvjNH',
+    '4yGUguvFScN3z3RteOJq0w'
   ],
   excludedGenres: [
     'orchestra',
