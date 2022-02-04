@@ -18,7 +18,10 @@ module.exports.background = async event => await Response.createBackground({
   excludedTracks: [
     '23K2pVDTXadG5Rc8H8l0e9',
     '1z8Ryd5EjADc14IFJJvjNH',
-    '4yGUguvFScN3z3RteOJq0w'
+    '4yGUguvFScN3z3RteOJq0w',
+    '4VbOIkKqt0gkZpC75oKSxS',
+    '6TXAZHsvrI7Ki20wTZAeu7',
+    '45f7SKLlIyaUhdo8bzObnD',
   ],
   excludedGenres: [
     'orchestra',
