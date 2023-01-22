@@ -1,11 +1,16 @@
 const Response = require('./classes/Response');
-const { setupSpotifyAPI, searchForRandomTrack, getRecommendations, getArtistGenres } = require('./src/spotifyAPI');
-const config = require('./config');
+const { setupSpotifyAPI } = require('./src/spotifyAPI');
+const { getAllRandomTracks } = require('./src/tracks');
 const { SpotifyAPIContext } = require('./src/context');
-const { randomInArray } = require('./src/utilities/random');
+const { saveToDynamo } = require('./src/dynamo');
+const config = require('./config');
 require('dotenv').config();
 
-async function backgroundV2(event) {
+async function backgroundV2() {
+
+  await saveToDynamo();
+
+  return;
 
   const spotResult = await SpotifyAPIContext.Provider(
     {
@@ -13,21 +18,7 @@ async function backgroundV2(event) {
       config: config.background,
     },
     async () => {
-
-      const totalTracks = [];
-      while (totalTracks.length < config.background.tracksPerPeriod) {
-
-        const track = await searchForRandomTrack();
-        const recommendations = await getRecommendations(track);
-        const selectedTrack = randomInArray(recommendations);
-        // Make sure the track isn't already in totalTracks
-        if (!selectedTrack || totalTracks.includes(selectedTrack?.uri)) continue;
-        // Make sure the track artists genres aren't excluded
-        if ((await getArtistGenres(selectedTrack.artists)).find(genre => config.background.excludedGenres.includes(genre))) continue;
-        totalTracks.push(selectedTrack.uri);
-        console.log(`${totalTracks.length}/${config.background.tracksPerPeriod}`);
-      }
-      return totalTracks;
+      return getAllRandomTracks();
     }
   );
 

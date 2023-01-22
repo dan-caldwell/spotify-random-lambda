@@ -59,8 +59,7 @@ async function getRecommendations(track) {
       markets: track.available_markets
     })).filter(track => track.markets.includes('US'));
   } catch (err) {
-    console.error(err);
-    console.error('Could not get tracks');
+    // The track probably doesn't have any recommendations
     return [];
   }
 }

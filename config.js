@@ -1,5 +1,8 @@
+require('dotenv').config();
+
 module.exports = {
   background: {
+    tableName: process.env.DAILY_BG_TABLE,
     tracksPerPeriod: 5,
     marketType: 'western',
     minInstrumentalness: 0.9,
