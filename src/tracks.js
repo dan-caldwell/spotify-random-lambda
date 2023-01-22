@@ -16,7 +16,7 @@ async function getAllRandomTracks() {
     // Make sure the track artists genres aren't excluded
     if ((await getArtistGenres(selectedTrack.artists)).find(genre => config.excludedGenres.includes(genre))) continue;
     totalTracks.push({
-      selectedTrack: selectedTrack.uri,
+      id: selectedTrack.uri,
       seedTrack: `spotify:track:${seedTrack}`, // Convert back to spotify track URI
     });
     console.log(`${totalTracks.length}/${config.tracksPerPeriod}`);

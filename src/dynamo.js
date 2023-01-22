@@ -1,16 +1,19 @@
+const { useContext, SpotifyAPIContext } = require('./context');
 const { DynamoDB } = require("aws-sdk");
 
 const dynamo = new DynamoDB.DocumentClient();
 
-async function saveToDynamo() {
-  const result = await dynamo.put({
-    TableName: 'spotify-daily-background',
-    Item: {
-      id: '123',
-      color: 'orange'
+async function saveToDynamo(value) {
+  const {
+    config: {
+      tableName,
     },
+  } = useContext(SpotifyAPIContext);
+  console.info('Saving to database', tableName, value);
+  await dynamo.put({
+    TableName: tableName,
+    Item: value,
   }).promise();
-  console.log(result);
 }
 
 module.exports = {

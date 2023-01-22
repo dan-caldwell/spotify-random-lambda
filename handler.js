@@ -1,16 +1,13 @@
+require('dotenv').config();
+const dayjs = require('dayjs');
 const Response = require('./classes/Response');
 const { setupSpotifyAPI } = require('./src/spotifyAPI');
 const { getAllRandomTracks } = require('./src/tracks');
 const { SpotifyAPIContext } = require('./src/context');
 const { saveToDynamo } = require('./src/dynamo');
 const config = require('./config');
-require('dotenv').config();
 
 async function backgroundV2() {
-
-  await saveToDynamo();
-
-  return;
 
   const spotResult = await SpotifyAPIContext.Provider(
     {
@@ -18,7 +15,16 @@ async function backgroundV2() {
       config: config.background,
     },
     async () => {
-      return getAllRandomTracks();
+      const today = dayjs();
+      const randomTracks = await getAllRandomTracks();
+      for (const track of randomTracks) {
+        await saveToDynamo({
+          ...track,
+          year: today.year(),
+          month: today.month(),
+          date: today.date(),
+        });
+      }
     }
   );
 
