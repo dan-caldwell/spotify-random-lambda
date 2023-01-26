@@ -5,6 +5,7 @@ const { setupSpotifyAPI } = require('./src/spotifyAPI');
 const { getAllRandomTracks } = require('./src/tracks');
 const { SpotifyAPIContext } = require('./src/context');
 const { saveToDynamo } = require('./src/dynamo');
+const { doesPlaylistExistForMonth } = require('./src/meta');
 const config = require('./config');
 
 async function backgroundV2() {
@@ -15,15 +16,20 @@ async function backgroundV2() {
       config: config.background,
     },
     async () => {
+      return doesPlaylistExistForMonth();
+
       const today = dayjs();
       const randomTracks = await getAllRandomTracks();
       for (const track of randomTracks) {
-        await saveToDynamo({
-          ...track,
-          year: today.year(),
-          month: today.month(),
-          date: today.date(),
-        });
+        await saveToDynamo(
+          config.background.tableName,
+          {
+            ...track,
+            year: today.year(),
+            month: today.month(),
+            date: today.date(),
+          }
+        );
       }
     }
   );

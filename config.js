@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 module.exports = {
+  metaTableName: process.env.META_TABLE,
   background: {
     tableName: process.env.DAILY_BG_TABLE,
     tracksPerPeriod: 5,

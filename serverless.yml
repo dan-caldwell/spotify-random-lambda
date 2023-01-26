@@ -10,6 +10,7 @@ provider:
   region: 'us-east-1'
   environment:
     DAILY_BG_TABLE: ${file(./config.js):background.tableName}
+    META_TABLE: ${file(./config.js):metaTableName}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -20,7 +21,9 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DAILY_BG_TABLE}"
+      Resource: 
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DAILY_BG_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}*:table/${self:provider.environment.META_TABLE}"
 
 resources:
   Resources:
@@ -38,6 +41,20 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:provider.environment.DAILY_BG_TABLE}
+    MetadataTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.META_TABLE}
 
 functions:
   background:
