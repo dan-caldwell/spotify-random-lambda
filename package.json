@@ -1,7 +1,7 @@
 {
   "scripts": {
     "test": "jest",
-    "invoke": "sls invoke local --function backgroundV2"
+    "invoke": "sls invoke local --function background"
   },
   "dependencies": {
     "aws-sdk": "^2.1299.0",

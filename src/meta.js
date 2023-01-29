@@ -14,9 +14,12 @@ async function doesPlaylistExistForMonth() {
   const month = today.month();
 
   // First just check if the entry exists
-  const { playlists } = await getFromDynamo(metaTableName, tableName); // The table name is the key
+  const result = await getFromDynamo(metaTableName, tableName); // The table name is the key
+  const playlists = JSON.parse(result?.playlists || '[]');
 
-  if (!playlists) return false;
+  console.info({ playlists })
+
+  if (!result) return false;
 
 }
 

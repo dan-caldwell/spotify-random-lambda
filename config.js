@@ -3,8 +3,9 @@ require('dotenv').config();
 module.exports = {
   metaTableName: process.env.META_TABLE,
   background: {
+    activePlaylistID: process.env.SPOTIFY_PLAYLIST_ID_BACKGROUND,
     tableName: process.env.DAILY_BG_TABLE,
-    tracksPerPeriod: 5,
+    tracksPerPeriod: 50,
     marketType: 'western',
     minInstrumentalness: 0.9,
     targetInstrumentalness: 1,
@@ -70,7 +71,8 @@ module.exports = {
       'hungarian classical performance',
       'german choir',
       'american contemporary classical',
-      'bohemian baroque'
+      'bohemian baroque',
+      'lo-fi',
     ],
   }
 }

@@ -61,5 +61,3 @@ functions:
     handler: handler.background
     events:
       - schedule: rate(1 day)
-  backgroundV2:
-    handler: handler.backgroundV2
