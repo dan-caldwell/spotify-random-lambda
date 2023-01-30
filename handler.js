@@ -37,6 +37,8 @@ async function background() {
         await replaceAllTracksInPlaylist(config.background.activePlaylistID, randomTracks.map(track => track.uri));
       }
     );
+    // Reset context just in case
+    SpotifyAPIContext.Reset();
   } catch (err) {
     console.error('Daily background failed', err);
   }

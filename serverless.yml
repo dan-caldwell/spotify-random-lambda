@@ -1,5 +1,6 @@
 service: spotify-random-lambda
 frameworkVersion: '2'
+useDotenv: true
 
 provider:
   name: aws
@@ -9,8 +10,14 @@ provider:
   memorySize: 2048
   region: 'us-east-1'
   environment:
-    DAILY_BG_TABLE: ${file(./config.js):background.tableName}
-    META_TABLE: ${file(./config.js):metaTableName}
+    SPOTIFY_CLIENT_ID: ${env:SPOTIFY_CLIENT_ID}
+    SPOTIFY_SECRET: ${env:SPOTIFY_SECRET}
+    SPOTIFY_PLAYLIST_ID_GLOBAL: ${env:SPOTIFY_PLAYLIST_ID_GLOBAL}
+    SPOTIFY_PLAYLIST_ID_WESTERN: ${env:SPOTIFY_PLAYLIST_ID_WESTERN}
+    SPOTIFY_PLAYLIST_ID_BACKGROUND: ${env:SPOTIFY_PLAYLIST_ID_BACKGROUND}
+    SPOTIFY_REFRESH_TOKEN: ${env:SPOTIFY_REFRESH_TOKEN}
+    DAILY_BG_TABLE: ${env:DAILY_BG_TABLE}
+    META_TABLE: ${env:META_TABLE}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -23,13 +30,24 @@ provider:
         - dynamodb:DeleteItem
       Resource: 
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DAILY_BG_TABLE}"
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}*:table/${self:provider.environment.META_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.META_TABLE}"
+
+plugins:
+  - serverless-esbuild
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    target: node14
+    platform: node
+    concurrency: 10
 
 resources:
   Resources:
     SpotifyDailyBackground:
       Type: AWS::DynamoDB::Table
-      DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
           - AttributeName: id
@@ -43,7 +61,6 @@ resources:
         TableName: ${self:provider.environment.DAILY_BG_TABLE}
     MetadataTable:
       Type: AWS::DynamoDB::Table
-      DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
           - AttributeName: id

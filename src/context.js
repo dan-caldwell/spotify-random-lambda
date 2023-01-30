@@ -10,9 +10,14 @@ function createContext() {
     return contextValue;
   }
 
+  function Reset() {
+    contextValue = undefined;
+  }
+
   return {
     Provider,
     Consumer,
+    Reset,
   }
 }
 

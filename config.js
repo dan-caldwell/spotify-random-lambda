@@ -72,7 +72,6 @@ module.exports = {
       'german choir',
       'american contemporary classical',
       'bohemian baroque',
-      'lo-fi',
     ],
   }
 }
