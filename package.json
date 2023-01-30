@@ -1,12 +1,20 @@
 {
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "invoke": "sls invoke local --function background",
+    "deploy": "sls deploy --stage prod"
   },
   "dependencies": {
+    "aws-sdk": "^2.1299.0",
     "chance": "^1.1.8",
+    "dayjs": "^1.11.7",
     "dotenv": "^10.0.0",
     "jest": "^27.4.7",
     "serverless-offline": "^8.3.0",
     "spotify-web-api-node": "^5.0.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.16.17",
+    "serverless-esbuild": "^1.37.3"
   }
 }
