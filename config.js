@@ -82,7 +82,12 @@ module.exports = {
     minInstrumentalness: 0.9,
     targetInstrumentalness: 1,
     maxPopularity: 60,
-    seedGenres: ['electro', 'electronic'],
     excludedGenres: [],
+    seedArtists: [
+      '58UpHBCQ1Jj67DJsR7Qyqg', // Uppermost
+      '0G2H8XIsqcdI5GJrYdRRPa', // ESP
+      '30F64wQIHvLiFTGaNZ73nU', // Sewerslvt
+      '3vNPCpgA6iJvFoWQfP3Fli', // South Pole
+    ],
   }
 }

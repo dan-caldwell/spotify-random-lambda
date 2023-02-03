@@ -47,11 +47,12 @@ async function getRecommendations(track) {
   try {
     const { spotifyAPI, config } = useContext(SpotifyAPIContext);
     const response = await spotifyAPI.getRecommendations({
-      seed_tracks: track ? [track] : undefined,
+      seed_tracks: track ? [track, ...(config.seedTracks || [])] : undefined,
       max_popularity: config.maxPopularity,
       min_instrumentalness: config.minInstrumentalness,
       target_instrumentalness: config.targetInstrumentalness,
       seed_genres: config.seedGenres,
+      seed_artists: config.seedArtists,
     });
     // Map and filter. Make sure available markets includes the US
     return response.body.tracks.map(({
