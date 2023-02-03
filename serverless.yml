@@ -10,13 +10,13 @@ provider:
   memorySize: 2048
   region: 'us-east-1'
   environment:
+    SPOTIFY_REFRESH_TOKEN: ${env:SPOTIFY_REFRESH_TOKEN}
     SPOTIFY_CLIENT_ID: ${env:SPOTIFY_CLIENT_ID}
     SPOTIFY_SECRET: ${env:SPOTIFY_SECRET}
-    SPOTIFY_PLAYLIST_ID_GLOBAL: ${env:SPOTIFY_PLAYLIST_ID_GLOBAL}
-    SPOTIFY_PLAYLIST_ID_WESTERN: ${env:SPOTIFY_PLAYLIST_ID_WESTERN}
     SPOTIFY_PLAYLIST_ID_BACKGROUND: ${env:SPOTIFY_PLAYLIST_ID_BACKGROUND}
-    SPOTIFY_REFRESH_TOKEN: ${env:SPOTIFY_REFRESH_TOKEN}
+    SPOTIFY_PLAYLIST_ID_ELECTRONIC: ${env:SPOTIFY_PLAYLIST_ID_ELECTRONIC}
     DAILY_BG_TABLE: ${env:DAILY_BG_TABLE}
+    DAILY_ELECTRONIC_TABLE: ${env:DAILY_ELECTRONIC_TABLE}
     META_TABLE: ${env:META_TABLE}
   iamRoleStatements:
     - Effect: Allow
@@ -59,6 +59,19 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:provider.environment.DAILY_BG_TABLE}
+    SpotifyDailyElectronic:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.DAILY_ELECTRONIC_TABLE}
     MetadataTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -76,5 +89,9 @@ resources:
 functions:
   background:
     handler: handler.background
+    events:
+      - schedule: rate(1 day)
+  electronic:
+    handler: handler.electronic
     events:
       - schedule: rate(1 day)

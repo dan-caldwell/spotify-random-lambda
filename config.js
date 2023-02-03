@@ -73,5 +73,16 @@ module.exports = {
       'american contemporary classical',
       'bohemian baroque',
     ],
+  },
+  electronic: {
+    activePlaylistID: process.env.SPOTIFY_PLAYLIST_ID_ELECTRONIC,
+    tableName: process.env.DAILY_ELECTRONIC_TABLE,
+    tracksPerPeriod: 10,
+    marketType: 'western',
+    minInstrumentalness: 0.9,
+    targetInstrumentalness: 1,
+    maxPopularity: 60,
+    seedGenres: ['electro', 'electronic'],
+    excludedGenres: [],
   }
 }

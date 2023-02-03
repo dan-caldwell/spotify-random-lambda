@@ -8,15 +8,21 @@ async function getAllRandomTracks() {
 
   const totalTracks = [];
   while (totalTracks.length < config.tracksPerPeriod) {
-    const seedTrack = await searchForRandomTrack();
-    const selectedTrack = await getRecommendation(seedTrack);
+    const seedTrack = config.noSeedTrack ? null : await searchForRandomTrack();
+    const selectedTrack = config.useSeedTrack ? seedTrack : await getRecommendation(seedTrack?.id);
+    if (process.env.DEBUG_MODE) {
+      console.info({
+        seedTrack: seedTrack?.id,
+        selectedTrack: selectedTrack?.id,
+      });
+    }
     // Returns the genres
     const filterPass = await doesTrackPassFilters(selectedTrack, totalTracks);
     if (!filterPass) continue;
     totalTracks.push({
       ...selectedTrack,
       ...filterPass,
-      seedTrack, // Convert back to spotify track URI
+      seedTrack: seedTrack?.id,
       dateAdded: dayjs().valueOf(),
     });
     console.log(`${totalTracks.length}/${config.tracksPerPeriod}`);
@@ -41,7 +47,7 @@ async function doesTrackPassFilters(track, totalTracks) {
     return false;
   }
   // Make sure the track artists genres aren't excluded
-  const genres = await getArtistGenres(track.artists.map(artist => artist?.id));
+  const genres = config.excludedGenres?.length && await getArtistGenres(track.artists.map(artist => artist?.id));
   if ((genres || [])?.find(genre => config.excludedGenres.includes(genre))) return false;
   return {
     genres,

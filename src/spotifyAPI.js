@@ -29,15 +29,14 @@ async function searchForRandomTrack() {
       {
         offset: randomOffset(),
         market: randomMarket(),
-        limit: 1
       }
     );
 
     // No tracks found
     if (!response?.body?.tracks?.items?.length) throw Error('Could not find any tracks');
 
-    // Return the track formatted
-    return response?.body?.tracks?.items?.[0]?.id;
+    // Get a random track
+    return randomInArray(response.body.tracks.items);
   } catch (err) {
     console.error(err);
     return null;
@@ -48,10 +47,11 @@ async function getRecommendations(track) {
   try {
     const { spotifyAPI, config } = useContext(SpotifyAPIContext);
     const response = await spotifyAPI.getRecommendations({
-      seed_tracks: [track],
+      seed_tracks: track ? [track] : undefined,
       max_popularity: config.maxPopularity,
       min_instrumentalness: config.minInstrumentalness,
       target_instrumentalness: config.targetInstrumentalness,
+      seed_genres: config.seedGenres,
     });
     // Map and filter. Make sure available markets includes the US
     return response.body.tracks.map(({

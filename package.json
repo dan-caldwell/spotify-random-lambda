@@ -1,7 +1,7 @@
 {
   "scripts": {
     "test": "jest",
-    "invoke": "sls invoke local --function background",
+    "invoke": "DEBUG_MODE=true sls invoke local --function",
     "deploy": "sls deploy --stage prod"
   },
   "dependencies": {
