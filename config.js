@@ -84,10 +84,15 @@ module.exports = {
     maxPopularity: 60,
     excludedGenres: [],
     seedArtists: [
-      '58UpHBCQ1Jj67DJsR7Qyqg', // Uppermost
-      '0G2H8XIsqcdI5GJrYdRRPa', // ESP
-      '30F64wQIHvLiFTGaNZ73nU', // Sewerslvt
-      '3vNPCpgA6iJvFoWQfP3Fli', // South Pole
+      //'58UpHBCQ1Jj67DJsR7Qyqg', // Uppermost
+      //'0G2H8XIsqcdI5GJrYdRRPa', // ESP
+      //'30F64wQIHvLiFTGaNZ73nU', // Sewerslvt
+      //'3vNPCpgA6iJvFoWQfP3Fli', // South Pole
+      //'2ABBMkcUeM9hdpimo86mo6', // Tourist
+    ],
+    seedTracks: [
+      //'4ZvGMcIzhHEnLJWg8XS6op', // Uppermost - Glider
+      '6XYGvtMH1CcZj4DVWDl1A3' // Ssaliva - Belly Ache
     ],
   }
 }
